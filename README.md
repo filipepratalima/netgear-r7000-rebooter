@@ -23,19 +23,19 @@ PASSWORD=[[ your router admin password ]]
 
 I recommend running as a service. I opted to use `pm2` - <https://pm2.keymetrics.io/>
 
-```
+```sh
 npm install -g pm2
 ```
 
 Then to start the service:
 
-```
+```sh
 npm run service-start
 ```
 
 and to stop:
 
-```
+```sh
 npm run service-stop
 ```
 
@@ -47,7 +47,7 @@ Running in service mode will send all console logs to a file `logfile.txt`.
 
 #### Single run:
 
-```
+```sh
 npm start
 ```
 
@@ -55,6 +55,6 @@ npm start
 
 Runs the script but will 'dismiss' on the confirmation reboot dialog.
 
-```
+```sh
 npm start --debug
 ```

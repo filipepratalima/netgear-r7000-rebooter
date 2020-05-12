@@ -1,6 +1,8 @@
-# netgear-r7000-rebooter
+# Netgear-R7000-Rebooter
 
-Simple app to schedule the rebooting of the Netgear R7000 router on a daily basis.
+Simple app to reboot the Netgear R7000 router on a scheduled daily basis.
+
+---
 
 ### Config:
 
@@ -13,8 +15,46 @@ USERNAME=[[ your router admin username ]]
 PASSWORD=[[ your router admin password ]]
 ```
 
-### Run:
+---
+
+### Running:
+
+#### As service:
+
+I recommend running as a service. I opted to use `pm2` - <https://pm2.keymetrics.io/>
+
+```
+npm install -g pm2
+```
+
+Then to start the service:
+
+```
+npm run service-start
+```
+
+and to stop:
+
+```
+npm run service-stop
+```
+
+#### Logs:
+
+Running in service mode will send all console logs to a file `logfile.txt`.
+
+##
+
+#### Single run:
 
 ```
 npm start
+```
+
+#### Single run debug:
+
+Runs the script but will 'dismiss' on the confirmation reboot dialog.
+
+```
+npm start --debug
 ```

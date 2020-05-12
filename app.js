@@ -1,6 +1,5 @@
 require('dotenv').config();
 const puppeteer = require('puppeteer');
-const fs = require('fs');
 
 const ADVANCED_FRAME_URL = 'ADVANCED_home.htm';
 const SELECTOR_PAGE_TABLE = '#page-table1';
@@ -50,7 +49,7 @@ const rebootRouter = async () => {
     const buttonReboot = await page.$(SELECTOR_PAGE_TABLE_BUTTON);
     page.on('dialog', async (dialog) => {
       if (__DEBUG__) {
-        console.log(dialog.message());
+        console.log(`[__DEBUG__]: ${dialog.message()}`);
         await dialog.dismiss();
       } else {
         await dialog.accept();
@@ -59,35 +58,20 @@ const rebootRouter = async () => {
       // end
       await browser.close();
 
-      writeLog(true);
+      console.log(`[SUCCESS] Rebooted router ${new Date()}`);
     });
     await buttonReboot.click().catch((e) => { });
   } catch (e) {
-    console.log(e);
-    writeLog(false, e.message);
+    console.error(e);
   }
-};
-
-/**
- * Write to log.txt
- * @param {boolean} isSuccess
- * @param {string} errorMessage
- */
-const writeLog = (isSuccess, errorMessage) => {
-  const msg_success = `[SUCCESS] Rebooted router ${new Date()}\n`;
-  const msg_fail = `[FAIL] Rebooted router ${new Date()}\n${errorMessage}\n`;
-
-  fs.writeFile('log.txt', isSuccess ? msg_success : msg_fail, (err) => {
-    if (err) return console.log(err);
-  });
 };
 
 (async () => {
   try {
-    console.log(`Scheduled router reboot daily at: ${sc_hour}:${sc_minutes}`);
+    console.log(`${__DEBUG__ ? '[__DEBUG__]: ' : ''}Scheduled router reboot daily at: ${sc_hour}:${sc_minutes}`);
     intervalId = setInterval(() => checkTime(rebootRouter), TIMER_INTERVAL);
   } catch (e) {
     clearInterval(intervalId);
-    console.log(e);
+    console.error(e);
   }
 })();

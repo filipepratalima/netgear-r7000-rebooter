@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "debug": "node app.js --debug"
+    "debug": "node app.js --debug",
+    "service-start": "pm2 start app.js --name='netgear-r7000-rebooter' --log=logfile.txt --time",
+    "service-stop": "pm2 stop 'netgear-r7000-rebooter'"
   },
   "author": "Filipe Prata de Lima",
   "license": "GPL-3.0-or-later",

@@ -4,7 +4,8 @@
   "description": "Simple app to schedule the rebooting of the Netgear R7000 router on a daily basis.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "debug": "node app.js --debug"
   },
   "author": "Filipe Prata de Lima",
   "license": "GPL-3.0-or-later",

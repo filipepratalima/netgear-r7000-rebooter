@@ -1,15 +1,21 @@
-require("dotenv").config();
-const puppeteer = require("puppeteer");
-const fs = require("fs");
+require('dotenv').config();
+const puppeteer = require('puppeteer');
+const fs = require('fs');
 
-const ADVANCED_FRAME_URL = "ADVANCED_home.htm";
-const SELECTOR_PAGE_TABLE = "#page-table1";
-const SELECTOR_PAGE_TABLE_BUTTON = ".page-table-button-left";
+const ADVANCED_FRAME_URL = 'ADVANCED_home.htm';
+const SELECTOR_PAGE_TABLE = '#page-table1';
+const SELECTOR_PAGE_TABLE_BUTTON = '.page-table-button-left';
 const TIMER_INTERVAL = 60000;
 
 const scheduledTime = process.env.SCHEDULED_DAILY_REBOOT_TIME;
-const [sc_hour, sc_minutes] = scheduledTime.split(":");
+const [sc_hour, sc_minutes] = scheduledTime.split(':');
 
+const flags = process.argv.filter((arg) => arg.startsWith('--'));
+const __DEBUG__ = flags.includes('--debug');
+
+/**
+ * Check set schedule
+ */
 let intervalId = 0;
 const checkTime = async (cb) => {
   const now = new Date();
@@ -36,22 +42,26 @@ const rebootRouter = async () => {
       password: process.env.PASSWORD,
     });
     await page.goto(`${process.env.ADMIN_WEB_URL}/${ADVANCED_FRAME_URL}`, {
-      waitUntil: "networkidle2",
+      waitUntil: 'networkidle2',
     });
 
     // select `Reboot` button and accept
     await page.waitForSelector(SELECTOR_PAGE_TABLE);
     const buttonReboot = await page.$(SELECTOR_PAGE_TABLE_BUTTON);
-    page.on("dialog", async (dialog) => {
-      console.log(dialog.message());
-      await dialog.accept();
+    page.on('dialog', async (dialog) => {
+      if (__DEBUG__) {
+        console.log(dialog.message());
+        await dialog.dismiss();
+      } else {
+        await dialog.accept();
+      }
 
       // end
       await browser.close();
 
       writeLog(true);
     });
-    await buttonReboot.click().catch((e) => {});
+    await buttonReboot.click().catch((e) => { });
   } catch (e) {
     console.log(e);
     writeLog(false, e.message);
@@ -67,7 +77,7 @@ const writeLog = (isSuccess, errorMessage) => {
   const msg_success = `[SUCCESS] Rebooted router ${new Date()}\n`;
   const msg_fail = `[FAIL] Rebooted router ${new Date()}\n${errorMessage}\n`;
 
-  fs.writeFile("log.txt", isSuccess ? msg_success : msg_fail, (err) => {
+  fs.writeFile('log.txt', isSuccess ? msg_success : msg_fail, (err) => {
     if (err) return console.log(err);
   });
 };
